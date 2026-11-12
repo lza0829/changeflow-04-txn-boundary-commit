@@ -34,12 +34,14 @@ onMounted(async () => {
     <div class="panel" v-if="preview">
       <p class="muted">共 {{ preview.count }} 条（展示前 50）</p>
       <table>
-        <thead><tr><th>seq</th><th>op</th><th>entity_key</th><th>event_ts</th><th>payload</th></tr></thead>
+        <thead><tr><th>seq</th><th>op</th><th>entity_key</th><th>txn_id</th><th>is_last</th><th>event_ts</th><th>payload</th></tr></thead>
         <tbody>
           <tr v-for="e in preview.events" :key="e.seq">
             <td>{{ e.seq }}</td>
             <td>{{ e.op }}</td>
             <td>{{ e.entity_key }}</td>
+            <td>{{ e.txn_id || '—' }}</td>
+            <td>{{ e.txn_id ? (e.is_last ? '末事件' : '') : '—' }}</td>
             <td>{{ e.event_ts }}</td>
             <td><pre class="mono">{{ JSON.stringify(e.payload) }}</pre></td>
           </tr>

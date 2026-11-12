@@ -15,8 +15,8 @@ def insert_ledger(
 ) -> None:
     conn.execute(
         """
-        INSERT INTO change_ledger(stream_id, run_id, seq, op, entity_key, event_ts, payload_json, disposition)
-        VALUES (?,?,?,?,?,?,?,?)
+        INSERT INTO change_ledger(stream_id, run_id, seq, op, entity_key, event_ts, payload_json, disposition, txn_id)
+        VALUES (?,?,?,?,?,?,?,?,?)
         """,
         (
             stream_id,
@@ -27,6 +27,7 @@ def insert_ledger(
             event["event_ts"],
             json.dumps(event.get("payload") or {}, ensure_ascii=False),
             disposition,
+            event.get("txn_id"),
         ),
     )
 
@@ -34,7 +35,7 @@ def insert_ledger(
 def list_ledger(conn: sqlite3.Connection, limit: int = 200) -> list[dict[str, Any]]:
     rows = conn.execute(
         """
-        SELECT id, stream_id, run_id, seq, op, entity_key, event_ts, payload_json, disposition
+        SELECT id, stream_id, run_id, seq, op, entity_key, event_ts, payload_json, disposition, txn_id
         FROM change_ledger ORDER BY id DESC LIMIT ?
         """,
         (limit,),
